@@ -15,7 +15,7 @@ Key features:
 2. Compile the code with [Maven](https://maven.apache.org/what-is-maven.html):
 - ```cd <metalda_location>```
 - ```mvn package```
-3. Prepare documents:
+3. Prepare documents
 	- All documents (training/testing) are in Mallet's [LabeledLDA](http://www.mimno.org/articles/labelsandpatterns/) format. 
 	- If the input documents are already in Mallet, they can be directly fed into the model. 
 	- Otherwise, the documents have to be first converted into Mallet format. 
@@ -23,7 +23,7 @@ Key features:
 		```DOC_ID\tLABEL1 LABEL2 LABEL3\tWORD1 WORD2 WORD3\n```.  
 		- Install [Mallet](http://mallet.cs.umass.edu) then use:  
 		```<mallet_location>/bin/mallet import-file --input <training/testing_doc_location> --output 	<training/testing_doc_mallet_location> --label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'```
-4. Prepare word features:
+4. Prepare word features
 	- MetaLDA uses the following sparse representation of binary word features:  
 	```WORD\tNNZ_INDEX1 NNZ_INDEX2 NNZ_INDEX3```
 	- Use embeddings as word features
@@ -33,7 +33,7 @@ Key features:
 		```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.BinariseWordEmbeddings --train-docs <training_doc_mallet_location>  --test-docs <testing_doc_mallet_location> --input <raw_embedding_location> --output <binary_embedding_location>```
  		- The function first reads the vocabularies of the training and testing documents (both in Mallet format) and then binarise the embeddings of the words in the vocabularies stored in the word embedding file, and finally saves the binarised embeddings into the required format. Note that MetaLDA does not require all the words in the training and testing documents have embeddings.
 		
-5. Train MetaLDA:  
+5. Train MetaLDA  
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDATrain --train-docs <training_doc_mallet_location> --num-topics <num_topic> --word-features <binary_embedding_location> --save-folder <save_folder> --sample-alpha-method <sample_alpha_method> --sample-beta-method <sample_beta_method>```
 - ```<sample_alpha_method>```: 
 	- 0: fixed on initial value
@@ -63,13 +63,13 @@ a [MAT-file](https://au.mathworks.com/help/matlab/matlab_env/save-load-and-delet
 7. Inference on the testing documents
 MetaLDA offers two kinds of inference:  
 - Ignore the words that exist in the testing documents but not in the training documents  
-		- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInfer --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true```
-		- ```<save_folder>```: same to the folder where the files are saved in the training phrase
-		- ```--compute-perplexity```
-				- true: MetaLDA will use one half of each testing document (every first words) to sample the document-topic distributions (theta) and the other half (every second words) to compute perplexity.
-				- false: MetaLDA will use all the content of each testing document to sample the document-topic distributions (theta). No perplexity will be computed.
+	- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInfer --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true```
+	- ```<save_folder>```: same to the folder where the files are saved in the training phrase
+	- ```--compute-perplexity```
+		- true: MetaLDA will use one half of each testing document (every first words) to sample the document-topic distributions (theta) and the other half (every second words) to compute perplexity.
+		- false: MetaLDA will use all the content of each testing document to sample the document-topic distributions (theta). No perplexity will be computed.
 - Consider the words that exist in the testing documents but not in the training documents  
-		- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInferUnseen --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true --word-features <binary_embedding_location>```
+	- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInferUnseen --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true --word-features <binary_embedding_location>```
 8. Access the saved files in the inference phrase
 - If ```MetaLDAInfer``` is used, MetaLDA will save the testing statistics into 'test_stats.mat' in ```<save_folder>```
 - If ```MetaLDAInferUnseen``` is used, MetaLDA will save the testing statistics into 'test_stats_unseen.mat' in ```<save_folder>```
