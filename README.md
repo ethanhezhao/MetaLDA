@@ -73,3 +73,5 @@ MetaLDA offers two kinds of inference:
 8. Access the saved files in the inference phrase
 - If ```MetaLDAInfer``` is used, MetaLDA will save the testing statistics into 'test_stats.mat' in ```<save_folder>```
 - If ```MetaLDAInferUnseen``` is used, MetaLDA will save the testing statistics into 'test_stats_unseen.mat' in ```<save_folder>```
+
+# Demo
