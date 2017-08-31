@@ -32,22 +32,23 @@ Key features:
  		- To binarise and convert the raw word embeddings, in the root folder of MetaLDA, use:
 		```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.BinariseWordEmbeddings --train-docs <training_doc_mallet_location>  --test-docs <testing_doc_mallet_location> --input <raw_embedding_location> --output <binary_embedding_location>```
  		- The function first reads the vocabularies of the training and testing documents (both in Mallet format) and then binarise the embeddings of the words in the vocabularies stored in the word embedding file, and finally saves the binarised embeddings into the required format. Note that MetaLDA does not require all the words in the training and testing documents have embeddings.
+		
 5. Train MetaLDA
 A typical command to train MetaLDA is: 
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDATrain --train-docs <training_doc_mallet_location> --num-topics <num_topic> --word-features <binary_embedding_location> --save-folder <save_folder> --sample-alpha-method <sample_alpha_method> --sample-beta-method <sample_beta_method>```
 - ```<sample_alpha_method>```: 
-		- 0: fixed on initial value
-		- 1: alpha is a full matrix sampled with doc labels
-		- 2: alpha is sampled as an asymmetric vector over topic
-		- 3: alpha is sampled as a single value
-		- 4: alpha is an asymmetric vector over topics sampled by Mallet built-in sampler
-		- 5: alpha is sampled as a single value by Mallet built-in sampler
+	- 0: fixed on initial value
+	- 1: alpha is a full matrix sampled with doc labels
+	- 2: alpha is sampled as an asymmetric vector over topic
+	- 3: alpha is sampled as a single value
+	- 4: alpha is an asymmetric vector over topics sampled by Mallet built-in sampler
+	- 5: alpha is sampled as a single value by Mallet built-in sampler
 - ```<sample_beta_method>```: 
-		- 0: fixed on initial value
-		- 1: beta is a full matrix sampled with word features
-		- 2: beta is sampled as an asymmetric vector over topics
-		- 3: beta is sampled as a single value
-		- 4: beta is sampled as a single value by Mallet built-in sampler
+	- 0: fixed on initial value
+	- 1: beta is a full matrix sampled with word features
+	- 2: beta is sampled as an asymmetric vector over topics
+	- 3: beta is sampled as a single value
+	- 4: beta is sampled as a single value by Mallet built-in sampler
 - For more details of the arguments, please type in 
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar --help```
 6. Access the saved files in the training phrase
