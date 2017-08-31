@@ -60,14 +60,14 @@ the vocabulary of the training documents, the order of the words matches the ind
 the vocabulary of the labels in the training documents, the order of the labels matches the index of lambda
 - train_stats.mat:  
 a [MAT-file](https://au.mathworks.com/help/matlab/matlab_env/save-load-and-delete-workspace-variables.html) of Matlab that saves the training statistics. [matfilerw](https://github.com/diffplug/matfilerw) for JAVA and [FileIO of Scipy](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html) for Python are good tools to access MAT-files.  Note that Matlab installation is not required although Matlab can directly load MAT-files. 
-7. Inference on the testing documents
+7. Inference on the testing documents  
 MetaLDA offers two kinds of inference:  
 - Ignore the words that exist in the testing documents but not in the training documents  
 	- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInfer --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true```
 	- ```<save_folder>```: same to the folder where the files are saved in the training phrase
 	- ```--compute-perplexity```
-		- true: MetaLDA will use one half of each testing document (every first words) to sample the document-topic distributions (theta) and the other half (every second words) to compute perplexity.
-		- false: MetaLDA will use all the content of each testing document to sample the document-topic distributions (theta). No perplexity will be computed.
+		- true: MetaLDA will use one half of each testing document (every first words) to sample its document-topic distribution (theta) and the other half (every second words) to compute perplexity.
+		- false: MetaLDA will use all the content of each testing document to sample its document-topic distribution (theta).  Perplexity will not be computed.
 - Consider the words that exist in the testing documents but not in the training documents  
 	- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInferUnseen --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true --word-features <binary_embedding_location>```
 8. Access the saved files in the inference phrase
