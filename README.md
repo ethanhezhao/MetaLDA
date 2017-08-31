@@ -22,6 +22,7 @@ Key features:
 		- each raw input document should in the following format:
 		```DOC_ID\tLABEL1 LABEL2 LABEL3\tWORD1 WORD2 WORD3\n```.  
 		- Install [Mallet](http://mallet.cs.umass.edu) then use:
+		
 ```<mallet_location>/bin/mallet import-file --input <training/testing_doc_location> --output <training/testing_doc_mallet_location> --label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'```
 4. Prepare word features:
 	- MetaLDA reads the following sparse representation of binary word features:
