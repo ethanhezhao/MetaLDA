@@ -49,7 +49,7 @@ Key features:
 	- 2: beta is sampled as an asymmetric vector over topics
 	- 3: beta is sampled as a single value
 	- 4: beta is sampled as a single value by Mallet built-in sampler
-- For more details of the arguments, please type in 
+- For details of the arguments, use:  
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar --help```
 6. Access the saved files in the training phrase
 In the training phrase, MetaLDA saves four files in the ```<save_folder>```:
