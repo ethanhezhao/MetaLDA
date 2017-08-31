@@ -33,8 +33,8 @@ Key features:
 		```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.BinariseWordEmbeddings --train-docs <training_doc_mallet_location>  --test-docs <testing_doc_mallet_location> --input <raw_embedding_location> --output <binary_embedding_location>```
  		- The function first reads the vocabularies of the training and testing documents (both in Mallet format) and then binarise the embeddings of the words in the vocabularies stored in the word embedding file, and finally saves the binarised embeddings into the required format. Note that MetaLDA does not require all the words in the training and testing documents have embeddings.
 		
-5. Train MetaLDA
-A typical command to train MetaLDA is: 
+5. Train MetaLDA:
+
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDATrain --train-docs <training_doc_mallet_location> --num-topics <num_topic> --word-features <binary_embedding_location> --save-folder <save_folder> --sample-alpha-method <sample_alpha_method> --sample-beta-method <sample_beta_method>```
 - ```<sample_alpha_method>```: 
 	- 0: fixed on initial value
