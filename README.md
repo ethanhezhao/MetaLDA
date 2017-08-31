@@ -51,7 +51,7 @@ Key features:
 - For details of the arguments, use:  
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar --help```
 6. Access the saved files in the training phrase
-In the training phrase, MetaLDA saves four files in the ```<save_folder>```:
+In the training phrase, MetaLDA saves the following files in the ```<save_folder>```:
 - top_words.txt:  
 the top 50 words with the largest weights (phi) in each topic (the number of top words can be changed)
 - train_alphabet.txt:  
