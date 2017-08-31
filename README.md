@@ -63,13 +63,13 @@ a [MAT-file](https://au.mathworks.com/help/matlab/matlab_env/save-load-and-delet
 7. Inference on the testing documents  
 MetaLDA offers two kinds of inference:  
 - Ignore the words that exist in the testing documents but not in the training documents  
-	- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInfer --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true```
+```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInfer --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true```
 	- ```<save_folder>```: same to the folder where the files are saved in the training phrase
 	- ```--compute-perplexity```
 		- true: MetaLDA will use one half of each testing document (every first words) to sample its document-topic distribution (theta) and the other half (every second words) to compute perplexity.
 		- false: MetaLDA will use all the content of each testing document to sample its document-topic distribution (theta).  Perplexity will not be computed.
 - Consider the words that exist in the testing documents but not in the training documents  
-	- ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInferUnseen --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true --word-features <binary_embedding_location>```
+```java -cp ./target/metalda-0.1-jar-with-dependencies.jar hezhao.MetaLDAInferUnseen --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true --word-features <binary_embedding_location>```
 8. Access the saved files in the inference phrase
 - If ```MetaLDAInfer``` is used, MetaLDA will save the testing statistics into 'test_stats.mat' in ```<save_folder>```
 - If ```MetaLDAInferUnseen``` is used, MetaLDA will save the testing statistics into 'test_stats_unseen.mat' in ```<save_folder>```
