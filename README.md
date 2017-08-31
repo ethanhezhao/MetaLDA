@@ -10,20 +10,19 @@ Key features:
 - Runs efficiently (bit-coding and SparseLDA framework in Mallet apply)
 - Runs with multi-threads (DistributedLDA framework in Mallet applies) 
 
-#Run MetaLDA
+# Run MetaLDA
 1. Clone the repository or download the code
 2. Compile the code with [Maven](https://maven.apache.org/what-is-maven.html)
 - ```cd <metalda_location>```
 - ```mvn package```
 3. Prepare documents:
-	- All documents (training/testing) are in Mallet format for [LabeledLDA](http://www.mimno.org/articles/labelsandpatterns/). 
+	- All documents (training/testing) are in Mallet's [LabeledLDA](http://www.mimno.org/articles/labelsandpatterns/) format. 
 	- If the input documents are already in Mallet, they can be directly fed into the model. 
 	- Otherwise, the documents have to be first converted into Mallet format. 
-		- each of the raw input documents should in the following format:
+		- each raw input document should in the following format:
 		```DOC_ID\tLABEL1 LABEL2 LABEL3\tWORD1 WORD2 WORD3\n```.  
-		- Install [Mallet](http://mallet.cs.umass.edu) in your system and for the training documents, then:
-```<mallet_location>/bin/mallet import-file --input <training_doc_location> --output <training_doc_mallet_location> --label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'```
-- For the testing documents, the command is similar.
+		- Install [Mallet](http://mallet.cs.umass.edu) then use:
+```<mallet_location>/bin/mallet import-file --input <training/testing_doc_location> --output <training/testing_doc_mallet_location> --label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'```
 4. Prepare word features:
 	- MetaLDA reads the following sparse representation of binary word features:
 	```WORD\tNNZ_INDEX1 NNZ_INDEX2 NNZ_INDEX3```
