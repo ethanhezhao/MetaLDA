@@ -63,8 +63,6 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
      * 1. full alpha matrix optimised with doc labels
      * 2. Asymmetric alpha (each column (topic) optimised with default doc labels)
      * 3. Symmetric alpha (same value for all alpha)
-     * 4. Asymmetric alpha (Mallet default)
-     * 5. Symmetric alpha (Mallet default)
      * 0. fixed.
      * */
 
@@ -74,7 +72,6 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
      * 1. full beta matrix optimised with word features
      * 2. Asymmetric beta (each row (topic) optimised with default word features)
      * 3. Symmetric beta (same value for all beta)
-     * 4. Symmetric beta (Mallet default)
      * 0. fixed.
      * */
     protected int sampleBetaMethod;
@@ -110,16 +107,6 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
         else if(this.sampleAlphaMethod == 3)
         {
             this.optimizeAlphaSymmetric();
-        }
-        else if(this.sampleAlphaMethod == 4)
-        {
-            super.setSymmetricAlpha(false);
-            super.optimizeAlpha(runnables);
-        }
-        else if(this.sampleAlphaMethod == 5)
-        {
-            super.setSymmetricAlpha(true);
-            super.optimizeAlpha(runnables);
         }
         else if(this.sampleAlphaMethod == 0)
         {
@@ -438,10 +425,6 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
         else if(this.sampleBetaMethod == 3)
         {
             this.optimizeBetaSymmetric();
-        }
-        else if(this.sampleBetaMethod == 4)
-        {
-            super.optimizeBeta(runnables);
         }
         else if(this.sampleBetaMethod == 0)
         {

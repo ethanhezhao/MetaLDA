@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * @author David Mimno, Andrew McCallum
  */
 
-public class ParallelTopicModelHyper implements Serializable {
+public abstract class ParallelTopicModelHyper implements Serializable {
 
 	public static final int UNASSIGNED_TOPIC = -1;
 
@@ -56,16 +56,11 @@ public class ParallelTopicModelHyper implements Serializable {
 	public double[][] beta;   // Prior on per-topic multinomial distribution over words
 	public double[] betaSum;
 
-	public boolean usingSymmetricAlpha = false;
-
 	public static final double DEFAULT_BETA = 0.01;
 	
 	public int[][] typeTopicCounts; // indexed by <feature index, topic index>
 	public int[] tokensPerTopic; // indexed by <topic index>
 
-	// for dirichlet estimation
-	public int[] docLengthCounts; // histogram of document sizes
-	public int[][] topicDocCounts; // histogram of document/topic counts, indexed by <topic index, sequence position index>
 
 	public int numIterations = 1000;
 	public int burninPeriod = 200; 
@@ -185,10 +180,6 @@ public class ParallelTopicModelHyper implements Serializable {
 //		}
 	}
 
-	public void setSymmetricAlpha(boolean b) {
-		usingSymmetricAlpha = b;
-	}
-
 
 	public void setNumThreads(int threads) {
 		this.numThreads = threads;
@@ -251,7 +242,6 @@ public class ParallelTopicModelHyper implements Serializable {
 		}
 
 		buildInitialTypeTopicCounts();
-		initializeHistograms();
 
 		logger.info("num docs: " + data.size());
 
@@ -468,172 +458,11 @@ public class ParallelTopicModelHyper implements Serializable {
 	}
 	
 
-	/** 
-	 *  Gather statistics on the size of documents 
-	 *  and create histograms for use in Dirichlet hyperparameter
-	 *  optimization.
-	 */
-	private void initializeHistograms() {
-
-		int maxTokens = 0;
-		totalTokens = 0;
-		int seqLen;
-
-		for (int doc = 0; doc < data.size(); doc++) {
-			FeatureSequence fs = (FeatureSequence) data.get(doc).instance.getData();
-			seqLen = fs.getLength();
-			if (seqLen > maxTokens)
-				maxTokens = seqLen;
-			totalTokens += seqLen;
-		}
-
-		logger.info("max tokens: " + maxTokens);
-		logger.info("total tokens: " + totalTokens);
-
-		docLengthCounts = new int[maxTokens + 1];
-		topicDocCounts = new int[numTopics][maxTokens + 1];
-	}
 	
-	public void optimizeAlpha(WorkerRunnableHyper[] runnables) {
-
-		// First clear the sufficient statistic histograms
-
-		Arrays.fill(docLengthCounts, 0);
-		for (int topic = 0; topic < topicDocCounts.length; topic++) {
-			Arrays.fill(topicDocCounts[topic], 0);
-		}
-
-		for (int thread = 0; thread < numThreads; thread++) {
-			int[] sourceLengthCounts = runnables[thread].getDocLengthCounts();
-			int[][] sourceTopicCounts = runnables[thread].getTopicDocCounts();
-
-			for (int count=0; count < sourceLengthCounts.length; count++) {
-				if (sourceLengthCounts[count] > 0) {
-					docLengthCounts[count] += sourceLengthCounts[count];
-					sourceLengthCounts[count] = 0;
-				}
-			}
-
-			for (int topic=0; topic < numTopics; topic++) {
-
-				if (! usingSymmetricAlpha) {
-					for (int count=0; count < sourceTopicCounts[topic].length; count++) {
-						if (sourceTopicCounts[topic][count] > 0) {
-							topicDocCounts[topic][count] += sourceTopicCounts[topic][count];
-							sourceTopicCounts[topic][count] = 0;
-						}
-					}
-				}
-				else {
-					// For the symmetric version, we only need one
-					//  count array, which I'm putting in the same
-					//  data structure, but for topic 0. All other
-					//  topic histograms will be empty.
-					// I'm duplicating this for loop, which
-					//  isn't the best thing, but it means only checking
-					//  whether we are symmetric or not numTopics times,
-					//  instead of numTopics * longest document length.
-					for (int count=0; count < sourceTopicCounts[topic].length; count++) {
-						if (sourceTopicCounts[topic][count] > 0) {
-							topicDocCounts[0][count] += sourceTopicCounts[topic][count];
-							//			 ^ the only change
-							sourceTopicCounts[topic][count] = 0;
-						}
-					}
-				}
-			}
-		}
-
-		if (usingSymmetricAlpha) {
-			double tempAlphaSum = Dirichlet.learnSymmetricConcentration(topicDocCounts[0],
-															 docLengthCounts,
-															 numTopics,
-															 alphaSum[0]);
-			Arrays.fill(this.alphaSum, tempAlphaSum);
-			for(int doc = 0; doc < this.data.size(); doc++)
-			{
-				Arrays.fill(alpha[doc], this.alphaSum[doc] / numTopics);
-			}
-		}
-		else {
-			try {
-				double tempAlphaSum = Dirichlet.learnParameters(alpha[0], topicDocCounts, docLengthCounts, 1.001, 1.0, 1);
-				Arrays.fill(this.alphaSum, tempAlphaSum);
-				for(int doc = 1; doc < this.data.size(); doc++)
-				{
-					for(int topic = 0; topic < numTopics; topic ++)
-					{
-						alpha[doc][topic] = alpha[0][topic];
-					}
-				}
-			} catch (RuntimeException e) {
-				// Dirichlet optimization has become unstable. This is known to happen for very small corpora (~5 docs).
-				logger.warning("Dirichlet optimization has become unstable. Resetting to alpha_t = 1.0.");
-				Arrays.fill(this.alphaSum, numTopics);
-				for(int doc = 0; doc < this.data.size(); doc++)
-				{
-					Arrays.fill(alpha[doc], 1.0);
-				}
-			}
-		}
-	}
+	public abstract void optimizeAlpha(WorkerRunnableHyper[] runnables);
 
 
-	public void optimizeBeta(WorkerRunnableHyper[] runnables) {
-		// The histogram starts at count 0, so if all of the
-		//  tokens of the most frequent type were assigned to one topic,
-		//  we would need to store a maxTypeCount + 1 count.
-		int[] countHistogram = new int[maxTypeCount + 1];
-
-		// Now count the number of type/topic pairs that have
-		//  each number of tokens.
-
-		int index;
-		for (int type = 0; type < numTypes; type++) {
-			int[] counts = typeTopicCounts[type];
-			index = 0;
-			while (index < counts.length &&
-				   counts[index] > 0) {
-				int count = counts[index] >> topicBits;
-				countHistogram[count]++;
-				index++;
-			}
-		}
-
-		// Figure out how large we need to make the "observation lengths"
-		//  histogram.
-		int maxTopicSize = 0;
-		for (int topic = 0; topic < numTopics; topic++) {
-			if (tokensPerTopic[topic] > maxTopicSize) {
-				maxTopicSize = tokensPerTopic[topic];
-			}
-		}
-
-		// Now allocate it and populate it.
-		int[] topicSizeHistogram = new int[maxTopicSize + 1];
-		for (int topic = 0; topic < numTopics; topic++) {
-			topicSizeHistogram[ tokensPerTopic[topic] ]++;
-		}
-
-		double tempBetaSum = Dirichlet.learnSymmetricConcentration(countHistogram,
-														topicSizeHistogram,
-														numTypes,
-														betaSum[0]);
-		Arrays.fill(this.betaSum, tempBetaSum);
-
-		for(int topic = 0; topic < numTopics; topic ++)
-		{
-			Arrays.fill(this.beta[topic], tempBetaSum / numTypes);
-		}
-
-
-		logger.fine("[beta: " + formatter.format(beta[0][0]) + "] ");
-		// Now publish the new value
-		for (int thread = 0; thread < numThreads; thread++) {
-			runnables[thread].resetBeta(beta, betaSum);
-		}
-
-	}
+	public abstract void optimizeBeta(WorkerRunnableHyper[] runnables);
 
 	public void estimate () throws IOException {
 
@@ -675,9 +504,7 @@ public class ParallelTopicModelHyper implements Serializable {
 													   random, data,
 													   runnableCounts, runnableTotals,
 													   offset, docsPerThread, isFullBeta);
-				
-				runnables[thread].initializeAlphaStatistics(docLengthCounts.length);
-				
+
 				offset += docsPerThread;
 			
 			}
@@ -700,8 +527,6 @@ public class ParallelTopicModelHyper implements Serializable {
 											  random, data,
 											  typeTopicCounts, tokensPerTopic,
 											  offset, docsPerThread, isFullBeta);
-
-			runnables[0].initializeAlphaStatistics(docLengthCounts.length);
 
 			// If there is only one thread, we 
 			//  can avoid communications overhead.
@@ -728,10 +553,6 @@ public class ParallelTopicModelHyper implements Serializable {
 				// Submit runnables to thread pool
 				
 				for (int thread = 0; thread < numThreads; thread++) {
-					if (iteration > burninPeriod && optimizeAlphaInterval != 0 &&
-						iteration % saveSampleInterval == 0) {
-						runnables[thread].collectAlphaStatistics();
-					}
 					
 					logger.fine("submitting thread " + thread);
 					executor.submit(runnables[thread]);
@@ -802,10 +623,6 @@ public class ParallelTopicModelHyper implements Serializable {
 				}
 			}
 			else {
-				if (iteration > burninPeriod && optimizeAlphaInterval != 0 &&
-					iteration % saveSampleInterval == 0) {
-					runnables[0].collectAlphaStatistics();
-				}
 				runnables[0].run();
 			}
 

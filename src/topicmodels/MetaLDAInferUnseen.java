@@ -715,12 +715,12 @@ public class MetaLDAInferUnseen implements Serializable {
             }
 
             double[][] lambda = null;
-            if (sampleAlphaMethod > 0)
+            if (sampleAlphaMethod == 1)
                 lambda = ((MLDouble) matReader.getMLArray("lambda")).getArray();
 
 
             double[][] delta = null;
-            if (sampleBetaMethod > 0)
+            if (sampleBetaMethod == 1)
                 delta = ((MLDouble) matReader.getMLArray("delta")).getArray();
 
 

@@ -498,10 +498,6 @@ public class MetaLDAInfer implements Serializable {
                 lambda = ((MLDouble) matReader.getMLArray("lambda")).getArray();
 
 
-            double[][] delta = null;
-            if (sampleBetaMethod > 0)
-                delta = ((MLDouble) matReader.getMLArray("delta")).getArray();
-
 
 
 

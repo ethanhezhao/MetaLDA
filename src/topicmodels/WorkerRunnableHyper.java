@@ -51,13 +51,7 @@ public class WorkerRunnableHyper implements Runnable {
 										// index>
 	protected int[] tokensPerTopic; // indexed by <topic index>
 
-	// for dirichlet estimation
-	protected int[] docLengthCounts; // histogram of document sizes
-	protected int[][] topicDocCounts; // histogram of document/topic counts,
-										// indexed by <topic index, sequence
-										// position index>
 
-	boolean shouldSaveState = false;
 	boolean shouldBuildLocalCounts = true;
 	
 	boolean isWithBeta;
@@ -131,22 +125,7 @@ public class WorkerRunnableHyper implements Runnable {
 		return typeTopicCounts;
 	}
 
-	public int[] getDocLengthCounts() {
-		return docLengthCounts;
-	}
 
-	public int[][] getTopicDocCounts() {
-		return topicDocCounts;
-	}
-
-	public void initializeAlphaStatistics(int size) {
-		docLengthCounts = new int[size];
-		topicDocCounts = new int[numTopics][size];
-	}
-
-	public void collectAlphaStatistics() {
-		shouldSaveState = true;
-	}
 
 	public void resetBeta(double[][] beta, double betaSum[]) {
 		this.beta = beta;
@@ -274,8 +253,6 @@ public class WorkerRunnableHyper implements Runnable {
 		if (shouldBuildLocalCounts) {
 			buildLocalTypeTopicCounts();
 		}
-
-		shouldSaveState = false;
 		isFinished = true;
 
 		// } catch (Exception e) {
@@ -661,18 +638,6 @@ public class WorkerRunnableHyper implements Runnable {
 
 		}
 
-		if (shouldSaveState) {
-			// Update the document-topic count histogram,
-			// for dirichlet estimation
-			docLengthCounts[docLength]++;
-
-			for (denseIndex = 0; denseIndex < nonZeroTopics; denseIndex++) {
-				int topic = localTopicIndex[denseIndex];
-
-				topicDocCounts[topic][localTopicCounts[topic]]++;
-			}
-		}
-
 		// Clean up our mess: reset the coefficients to values with only
 		// smoothing. The next doc will update its own non-zero topics...
 
@@ -1014,18 +979,6 @@ public class WorkerRunnableHyper implements Runnable {
 			smoothingOnlyMass += alpha[newTopic] * beta / (tokensPerTopic[newTopic] + betaSum);
 			topicBetaMass += beta * localTopicCounts[newTopic] / (tokensPerTopic[newTopic] + betaSum);
 
-		}
-
-		if (shouldSaveState) {
-			// Update the document-topic count histogram,
-			// for dirichlet estimation
-			docLengthCounts[docLength]++;
-
-			for (denseIndex = 0; denseIndex < nonZeroTopics; denseIndex++) {
-				int topic = localTopicIndex[denseIndex];
-
-				topicDocCounts[topic][localTopicCounts[topic]]++;
-			}
 		}
 
 		// Clean up our mess: reset the coefficients to values with only
