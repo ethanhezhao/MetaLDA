@@ -39,14 +39,11 @@ Key features:
 	- 1: alpha is a full matrix sampled with doc labels
 	- 2: alpha is sampled as an asymmetric vector over topic
 	- 3: alpha is sampled as a single value
-	- 4: alpha is an asymmetric vector over topics sampled by Mallet built-in sampler
-	- 5: alpha is sampled as a single value by Mallet built-in sampler
 - ```<sample_beta_method>```: 
 	- 0: fixed on initial value
 	- 1: beta is a full matrix sampled with word features
 	- 2: beta is sampled as an asymmetric vector over topics
 	- 3: beta is sampled as a single value
-	- 4: beta is sampled as a single value by Mallet built-in sampler
 - For details of the arguments, use:  
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar topicmodels.MetaLDATrain --help```
 7. Access the saved files in the training phrase  
