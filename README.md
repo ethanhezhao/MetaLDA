@@ -77,4 +77,4 @@ To wrap up the above steps, a demo bash script is offered. To run the demo, simp
 # Included datasets
 
 # References
-[1] H. Zhao, L. Du, W. Buntine, G. Liu, MetaLDA: a Topic Model that Efficiently Incorporates Meta information”, _International Conference on Data Mining (ICDM)_ 2017.
+[1] H. Zhao, L. Du, W. Buntine, G. Liu, MetaLDA: a Topic Model that Efficiently Incorporates Meta information, _International Conference on Data Mining (ICDM)_ 2017.
