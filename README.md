@@ -3,10 +3,10 @@ MetaLDA is a topic model that leverages either document or word meta information
 
 Key features:
 1. Incorporates both document and word meta information in binary format
-2. Implemented on top of [Mallet](http://mallet.cs.umass.edu) by JAVA
+2. Implemented on top of [Mallet](http://mallet.cs.umass.edu) in JAVA
 - Works with Mallet input format
-- Runs efficiently (bit-coding and SparseLDA framework in Mallet apply)
-- Runs with multi-threads (DistributedLDA framework in Mallet applies)
+- Runs efficiently (bit-coding and SparseLDA framework apply)
+- Runs with multi-threads (DistributedLDA framework applies)
 
 # Run MetaLDA
 1. Requirements: JDK 1.8 or later and [Maven](https://maven.apache.org/what-is-maven.html). Other dependencies will be downloaded by Maven.
