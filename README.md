@@ -1,5 +1,5 @@
 # MetaLDA
-MetaLDA is a topic model that leverages either document or word meta information, or both of them jointly.
+MetaLDA is a topic model that leverages either document or word meta information, or both of them jointly. MetaLDA is proposed in H. Zhao, L. Du, W. Buntine, G. Liu, “MetaLDA: a Topic Model that Efficiently Incorporates Meta information”, International Conference on Data Mining (ICDM) 2017.
 
 Key features:
 1. Incorporates both document and word meta information in binary format
