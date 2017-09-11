@@ -66,9 +66,10 @@ MetaLDA offers two kinds of inference:
 		- false: MetaLDA will use all the content of each testing document to sample its document-topic distribution (theta).  Perplexity will not be computed.
 - Consider the words that exist in the testing documents but not in the training documents  
 ```java -cp ./target/metalda-0.1-jar-with-dependencies.jar topicmodels.MetaLDAInferUnseen --test-docs <testing_doc_mallet_location> --save-folder <save_folder> --compute-perplexity true --word-features <binary_embedding_location>```
-8. Access the saved files in the inference phrase
+9. Access the saved files in the inference phrase
 - If ```MetaLDAInfer``` is used, MetaLDA will save the testing statistics into 'test_stats.mat' in ```<save_folder>```
 - If ```MetaLDAInferUnseen``` is used, MetaLDA will save the testing statistics into 'test_stats_unseen.mat' in ```<save_folder>```
+10. Wrapper of Mallet LDA
 
 # Demo
 
