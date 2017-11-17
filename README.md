@@ -74,8 +74,9 @@ MetaLDA offers two kinds of inference:
 # Demo
 
 To wrap up the above steps, a demo bash script is offered. To run the demo, simply go to the ```demo``` folder and run ```./demo.sh```.
-
-# Included datasets
+For the demo, the WS dataset used in the paper is included.
 
 # References
 [1] H. Zhao, L. Du, W. Buntine, G. Liu, "MetaLDA: a Topic Model that Efficiently Incorporates Meta information", _International Conference on Data Mining (ICDM)_ 2017.
+
+If you find any bugs, please contact He.Zhao@monash.edu. 
