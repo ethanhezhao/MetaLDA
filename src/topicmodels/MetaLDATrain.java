@@ -518,8 +518,10 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
                     newDelta = random.nextGamma(mu + this.wordTables[feature][topic], 1);
                     temp = 0;
                     for (int type : this.featureWord.get(feature)) {
-                        temp += beta[topic][type] * wordLogQ[topic];
+                        temp += beta[topic][type];
                     }
+			
+		    temp *= wordLogQ[topic];
                     newDelta = newDelta / (temp + 1.0 * this.delta[feature][topic]);
                     for (int type : featureWord.get(feature)) {
                         beta[topic][type] *= newDelta;
