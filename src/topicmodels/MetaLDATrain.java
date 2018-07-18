@@ -1262,7 +1262,7 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
                 e.printStackTrace();
             }
 
-
+ 
         }
 
 
