@@ -143,41 +143,53 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
 
             int docLength = tokenSequence.getLength();
 
-            int topic;
 
-            int newTable;
-
-            Arrays.fill(docTopicCount, 0);
-
-            for (int position = 0; position < docLength; position++) {
-                if (oneDocTopics[position] == ParallelTopicModelHyper.UNASSIGNED_TOPIC) {
-                    continue;
-                }
-                topic = oneDocTopics[position];
-
-                docTopicCount[topic]++;
-
-            }
-
-            /* sample tables */
-            for (topic = 0; topic < numTopics; topic++)
+            if (docLength <= 0)
             {
-                if (docTopicCount[topic] > 0)
-                {
-                    newTable = 1;
-                    for (int j = 1; j < docTopicCount[topic]; j++)
-                    {
-                        newTable += random.nextDouble() < (alpha[doc][topic] / (alpha[doc][topic] + j)) ? 1 : 0;
-                    }
-                    for (int f = 0; f < featureIndices.length; f++)
-                        this.docTables[featureIndices[f]][topic] += newTable;
-                    docTables[docDefaultFeatureIndex][topic] += newTable;
-                }
-
+                logger.warning("document length is zero at " + Integer.toString(doc));
             }
 
-            /*sample q*/
-            this.docLogQ[doc] = - Math.log(random.nextBeta(this.alphaSum[doc], docLength ));
+            else
+            {
+
+                int topic;
+
+                int newTable;
+
+                Arrays.fill(docTopicCount, 0);
+
+                for (int position = 0; position < docLength; position++) {
+                    if (oneDocTopics[position] == ParallelTopicModelHyper.UNASSIGNED_TOPIC) {
+                        continue;
+                    }
+                    topic = oneDocTopics[position];
+
+                    docTopicCount[topic]++;
+
+                }
+
+                /* sample tables */
+                for (topic = 0; topic < numTopics; topic++)
+                {
+                    if (docTopicCount[topic] > 0)
+                    {
+                        newTable = 1;
+                        for (int j = 1; j < docTopicCount[topic]; j++)
+                        {
+                            newTable += random.nextDouble() < (alpha[doc][topic] / (alpha[doc][topic] + j)) ? 1 : 0;
+                        }
+                        for (int f = 0; f < featureIndices.length; f++)
+                            this.docTables[featureIndices[f]][topic] += newTable;
+                        docTables[docDefaultFeatureIndex][topic] += newTable;
+                    }
+
+                }
+
+                /*sample q*/
+
+                this.docLogQ[doc] = - Math.log(random.nextBeta(this.alphaSum[doc], docLength ));
+            
+            }
 
 
         }
@@ -251,41 +263,49 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
 
             int docLength = tokenSequence.getLength();
 
-            int topic;
 
-            int newTable;
-
-            Arrays.fill(docTopicCount, 0);
-
-            for (int position = 0; position < docLength; position++) {
-                if (oneDocTopics[position] == ParallelTopicModelHyper.UNASSIGNED_TOPIC) {
-                    continue;
-                }
-                topic = oneDocTopics[position];
-
-                docTopicCount[topic]++;
-
-            }
-
-            /* sample tables */
-            for (topic = 0; topic < numTopics; topic++)
+            if (docLength <= 0)
             {
-                if (docTopicCount[topic] > 0)
-                {
-                    newTable = 1;
-                    for (int j = 1; j < docTopicCount[topic]; j++)
-                    {
-                        newTable += random.nextDouble() < (alpha[doc][topic] / (alpha[doc][topic] + j)) ? 1 : 0;
-                    }
-                    docTables[docDefaultFeatureIndex][topic] += newTable;
-                }
-
+                logger.warning("document length is zero at " + Integer.toString(doc));
             }
 
-            /*sample q*/
-            this.docLogQ[doc] = - Math.log(random.nextBeta(this.alphaSum[doc], docLength ));
+            else
+            {
+                int topic;
 
+                int newTable;
 
+                Arrays.fill(docTopicCount, 0);
+
+                for (int position = 0; position < docLength; position++) {
+                    if (oneDocTopics[position] == ParallelTopicModelHyper.UNASSIGNED_TOPIC) {
+                        continue;
+                    }
+                    topic = oneDocTopics[position];
+
+                    docTopicCount[topic]++;
+
+                }
+
+                /* sample tables */
+                for (topic = 0; topic < numTopics; topic++)
+                {
+                    if (docTopicCount[topic] > 0)
+                    {
+                        newTable = 1;
+                        for (int j = 1; j < docTopicCount[topic]; j++)
+                        {
+                            newTable += random.nextDouble() < (alpha[doc][topic] / (alpha[doc][topic] + j)) ? 1 : 0;
+                        }
+                        docTables[docDefaultFeatureIndex][topic] += newTable;
+                    }
+
+                }
+
+                /*sample q*/
+                this.docLogQ[doc] = - Math.log(random.nextBeta(this.alphaSum[doc], docLength ));
+
+            }
         }
 
 
@@ -358,41 +378,51 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
 
             int docLength = tokenSequence.getLength();
 
-            int topic;
 
-            int newTable;
-
-            Arrays.fill(docTopicCount, 0);
-
-            for (int position = 0; position < docLength; position++) {
-                if (oneDocTopics[position] == ParallelTopicModelHyper.UNASSIGNED_TOPIC) {
-                    continue;
-                }
-                topic = oneDocTopics[position];
-
-                docTopicCount[topic]++;
-
-            }
-
-            /* sample tables */
-            for (topic = 0; topic < numTopics; topic++)
+            if (docLength <= 0)
             {
-                if (docTopicCount[topic] > 0)
-                {
-                    newTable = 1;
-                    for (int j = 1; j < docTopicCount[topic]; j++)
-                    {
-                        newTable += random.nextDouble() < (alpha[doc][topic] / (alpha[doc][topic] + j)) ? 1 : 0;
-                    }
-                    sumTable += newTable;
-                }
-
+                logger.warning("document length is zero at " + Integer.toString(doc));
             }
 
-            /*sample q*/
-            this.docLogQ[doc] = - Math.log(random.nextBeta(this.alphaSum[doc], docLength ));
-            sumDocLogQ += this.docLogQ[doc];
+            else
 
+            {
+
+                int topic;
+
+                int newTable;
+
+                Arrays.fill(docTopicCount, 0);
+
+                for (int position = 0; position < docLength; position++) {
+                    if (oneDocTopics[position] == ParallelTopicModelHyper.UNASSIGNED_TOPIC) {
+                        continue;
+                    }
+                    topic = oneDocTopics[position];
+
+                    docTopicCount[topic]++;
+
+                }
+
+                /* sample tables */
+                for (topic = 0; topic < numTopics; topic++)
+                {
+                    if (docTopicCount[topic] > 0)
+                    {
+                        newTable = 1;
+                        for (int j = 1; j < docTopicCount[topic]; j++)
+                        {
+                            newTable += random.nextDouble() < (alpha[doc][topic] / (alpha[doc][topic] + j)) ? 1 : 0;
+                        }
+                        sumTable += newTable;
+                    }
+
+                }
+
+                /*sample q*/
+                this.docLogQ[doc] = - Math.log(random.nextBeta(this.alphaSum[doc], docLength ));
+                sumDocLogQ += this.docLogQ[doc];
+            }
         }
 
 
@@ -518,10 +548,8 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
                     newDelta = random.nextGamma(mu + this.wordTables[feature][topic], 1);
                     temp = 0;
                     for (int type : this.featureWord.get(feature)) {
-                        temp += beta[topic][type];
+                        temp += beta[topic][type] * wordLogQ[topic];
                     }
-			
-		    temp *= wordLogQ[topic];
                     newDelta = newDelta / (temp + 1.0 * this.delta[feature][topic]);
                     for (int type : featureWord.get(feature)) {
                         beta[topic][type] *= newDelta;
@@ -792,13 +820,16 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
 
             for(int doc = 0; doc < data.size(); doc ++) {
 
+                this.alphaSum[doc] = 0;
                 FeatureVector feature = (FeatureVector) data.get(doc).instance.getTarget();
                 int[] featureIndices = this.sampleAlphaMethod == 2? new int[0] : feature.getIndices();
                 for (int topic = 0; topic < numTopics; topic++) {
                     alpha[doc][topic] = lambda[docDefaultFeatureIndex][topic];
                     for (int f = 0; f < featureIndices.length; f++) {
                         alpha[doc][topic] *= lambda[featureIndices[f]][topic];
+
                     }
+                    this.alphaSum[doc] += this.alpha[doc][topic];
                 }
 
             }
@@ -925,7 +956,10 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
         /*init beta*/
         if (this.sampleBetaMethod == 1 || this.sampleBetaMethod == 2) {
             for (int topic = 0; topic < numTopics; topic++) {
+                this.betaSum[topic] = 0;
+
                 for (int type = 0; type < numTypes; type++) {
+
                     this.beta[topic][type] = this.delta[wordDefaultFeatureIndex][topic];
 
                     if (this.wordFeatureList.size() > 0) {
@@ -936,7 +970,7 @@ public class MetaLDATrain extends ParallelTopicModelHyper{
                             }
                         }
                     }
-
+                    this.betaSum[topic] += this.beta[topic][type];
                 }
             }
         }
