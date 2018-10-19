@@ -5,8 +5,8 @@ MALLET_LOCATION='/home/wbuntine/Code/mallet-2.0.8'
 METALDA_LOCATION='/home/wbuntine/GitHub/MetaLDA'
 
 #  this is a directory, must contain 'train_doc.txt'
-dataset='SCIweek-nomed'
-topics=20
+dataset=$1
+topics=$2
 
 rm -rf $dataset/save
 

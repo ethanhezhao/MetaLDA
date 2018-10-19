@@ -10,11 +10,15 @@ tok = textscan(fileID, '%s');
 fclose(fileID);
 fileID = fopen(strcat(dir,'/save/train_target_alphabet.txt'),'r');
 label = textscan(fileID, '%s');
+%labelStr = sprintf('%s ', label{1}{:})
+%labelArr = sscanf(labelStr, '%s ',size(label{1},1));
+%labelArr(1:10)
 fclose(fileID);
 
 if printdocs
     % fileID = fopen(strcat(dir,'/train_doc.txt'),'r');
-    [doctxt] = textread(strcat(dir,'/train_doc.txt'), '%s', -1, 'delimiter','\n','whitespace','','bufsize',1000000);
+    [doctxt] = textscan(fopen(strcat(dir,'/train_doc.txt')), '%s','Delimiter','\n');
+    doctxt = doctxt{1};
     % doctxt = textscan(fileID, '%s');
     % fclose(fileID);
 end
@@ -39,7 +43,7 @@ fprintf(rep, 'Effective no. topics=%f/%d\n', ent(ptf), K);
 for ik = 1:K
     k = tx(ik);
     nTheta = topic_type(k,:);
-    thisBeta = beta(k,:);
+    thisBeta = beta(k,:);% 
     nT = sum(nTheta);
     nB = sum(thisBeta);
     thisTheta = (nTheta + thisBeta) / (nT + nB);
@@ -85,13 +89,13 @@ for ik = 1:K
     if printdocs==0
        fprintf("\n");
     end
-end 
+end
 
 %  last "label" is the base case, so ignore
-%[~,lbidx] = sort(label{1},'ascend');
+[~,lbidx] = sort(label{1,1});
 
-for l = 1:L
-    %l = lbidx(li);
+for li = 1:L-1
+    l = lbidx(li);
     if l<L 
      lpr = lambda(l,:);
      lpr = lpr / sum(lpr);
@@ -102,7 +106,7 @@ for l = 1:L
      for i = 1:4
           fprintf(rep,"  %d (%f) :: %s\n", idx(i), lpr(idx(i)), topicwords(idx(i)));
      end
-     fprintf("\n");
+     fprintf(rep,"\n");
     end
 end
 fclose(rep);
