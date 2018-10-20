@@ -10,20 +10,26 @@ tok = textscan(fileID, '%s');
 fclose(fileID);
 fileID = fopen(strcat(dir,'/save/train_target_alphabet.txt'),'r');
 label = textscan(fileID, '%s');
-%labelStr = sprintf('%s ', label{1}{:})
-%labelArr = sscanf(labelStr, '%s ',size(label{1},1));
-%labelArr(1:10)
+labelStr = sprintf('%s ', label{1}{:})
+labelArr = sscanf(labelStr, '%s ',size(label{1},1));
+labelArr(1:10)
 fclose(fileID);
 
 if printdocs
     % fileID = fopen(strcat(dir,'/train_doc.txt'),'r');
     [doctxt] = textscan(fopen(strcat(dir,'/train_doc.txt')), '%s','Delimiter','\n');
     doctxt = doctxt{1};
-    % doctxt = textscan(fileID, '%s');
+    % [doctxt] = textread(strcat(dir,'/train_doc.txt'), '%s', -1, 'delimiter','\n','whitespace','','bufsize',1000000);
     % fclose(fileID);
 end
 
 rep = fopen(strcat(dir,'/save/train_report.txt'),'w');
+repW = fopen(strcat(dir,'/save/topic_words.csv'),'w');
+fprintf(repW, "topic-id,word,probability\n");
+repL = fopen(strcat(dir,'/save/topic_lift.csv'),'w');
+fprintf(repL, "topic-id,word,lift\n");
+repS = fopen(strcat(dir,'/save/topic_stats.csv'),'w');
+fprintf(repS, "topic-id,proportion,eff-no-words\n");
 
 nW = 20;
 K = size(beta,1);
@@ -32,6 +38,8 @@ L = size(lambda,1);
 %  access tok like:  tok{1}(20) 
 
 df = sum(topic_type,1);
+df = df / sum(df);
+size(df)
 % df = df.';
 tf = sum(doc_topic,1);
 [tc, tx] = sort(tf,'descend');
@@ -51,10 +59,13 @@ for ik = 1:K
     % size(thisTheta)
     fprintf(rep, 'Topic %d probability=%f eff.no.words=%f\n  FREQ: ', k, ptf(k), ent(thisTheta));
     topicwords(k) = "";
+    fprintf(repS,"%d,%f,%f\n", k, ptf(k), ent(thisTheta));
+    
    for i = 1:nW
         nm = tok{1}(idx(i));
         fprintf(rep, ' %s (%f)', nm{1}, out(i));
        topicwords(k) = strcat(topicwords(k),strcat(" ",nm{1}));
+       fprintf(repW, '%d,%s,%f\n', k, nm{1}, out(i));
    end
     %  compute surprises
     fprintf(rep, '\n  SURPRISE: ');
@@ -67,6 +78,7 @@ for ik = 1:K
      for i = 1:nW
         nm = tok{1}(idx(i));
         fprintf(rep, ' %s', nm{1});
+        fprintf(repL, "%d,%s,%f\n", k, nm{1}, out(i));
      end
     
     %  compute top docs
@@ -112,5 +124,8 @@ for li = 1:L-1
     end
 end
 fclose(rep);
+fclose(repW);
+fclose(repS);
+fclose(repL);
 
 val = 1;
