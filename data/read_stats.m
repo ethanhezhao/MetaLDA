@@ -95,18 +95,20 @@ end
 [~,lbidx] = sort(label{1,1});
 
 for li = 1:L-1
-    l = lbidx(li);
-    if l<L 
-     lpr = lambda(l,:);
-     lpr = lpr / sum(lpr);
-     nm = label{1}(l);
-     fprintf(rep,"label %d::%s  eff.no.topics=%f\n", l, nm{1}, ent(lpr) );
-     [out,idx] = sort(lpr,'descend');
-     fprintf(rep,"  top topics are\n");
-     for i = 1:4
-          fprintf(rep,"  %d (%f) :: %s\n", idx(i), lpr(idx(i)), topicwords(idx(i)));
-     end
-     fprintf(rep,"\n");
+    if li <= size(lbidx)
+      l = lbidx(li);
+      if l<L 
+       lpr = lambda(l,:);
+       lpr = lpr / sum(lpr);
+       nm = label{1}(l);
+       fprintf(rep,"label %d::%s  eff.no.topics=%f\n", l, nm{1}, ent(lpr) );
+       [out,idx] = sort(lpr,'descend');
+       fprintf(rep,"  top topics are\n");
+       for i = 1:4
+            fprintf(rep,"  %d (%f) :: %s\n", idx(i), lpr(idx(i)), topicwords(idx(i)));
+       end
+       fprintf(rep,"\n");
+      end
     end
 end
 fclose(rep);

@@ -10,6 +10,18 @@ topics=$2
 
 rm -rf $dataset/save
 
+# prepare training/testing documents
+
+$MALLET_LOCATION/bin/mallet import-file --input $dataset/train_doc.txt \
+--output $dataset/train_doc.mallet \
+--label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'
+
+if [ -f $dataset/test_doc.txt ] ; then
+    $MALLET_LOCATION/bin/mallet import-file --input $dataset/test_doc.txt \
+                                --output $dataset/test_doc.mallet \
+                                --label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'
+fi
+
 #  prepare embeddings
 
 if [ ! -f $dataset/binary_embeddings.txt ] ; then
@@ -18,18 +30,6 @@ if [ ! -f $dataset/binary_embeddings.txt ] ; then
     else
 	java -cp $METALDA_LOCATION/target/metalda-0.1-jar-with-dependencies.jar topicmodels.BinariseWordEmbeddings --train-docs $dataset/train_doc.mallet --input $METALDA_LOCATION/data/raw_embeddings.txt --output $dataset/binary_embeddings.txt
     fi
-fi
-
-# prepare training/testing documents
-
-$MALLET_LOCATION/bin/mallet import-file --input $dataset/train_doc.txt \
---output $dataset/train_doc.mallet \
---label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)' 
-
-if [ -f $dataset/test_doc.txt ] ; then
-    $MALLET_LOCATION/bin/mallet import-file --input $dataset/test_doc.txt \
-				--output $dataset/test_doc.mallet \
-				--label-as-features --keep-sequence --line-regex '([^\t]+)\t([^\t]+)\t(.*)'
 fi
 
 echo 'converting input documents finished ...'
