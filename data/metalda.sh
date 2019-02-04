@@ -54,14 +54,17 @@ echo 'binarising word embeddings finished ...'
 # train MetaLDA
 
 alphamethod=1
-
 betamethod=1
+iter=20000
+burn=5000
 
 savedir=$dataset/save && mkdir -p $savedir;
 
 java -Xmx4g -cp $METALDA_LOCATION/target/metalda-0.1-jar-with-dependencies.jar topicmodels.MetaLDATrain \
 --train-docs $dataset/train_doc.mallet \
 --num-topics $topics \
+--num-iterations $iter \
+--burn-in-period $burn \
 --word-features $dataset/binary_embeddings.txt \
 --save-folder $savedir \
 --sample-alpha-method $alphamethod \
