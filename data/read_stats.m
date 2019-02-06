@@ -1,18 +1,15 @@
-function val = read_stats(dir)
+function val = read_stats(dir,save)
 
 val = 0;
 printdocs = 1;
 
 beta = [];
-load(strcat(dir,'/save/train_stats.mat'));
-fileID = fopen(strcat(dir,'/save/train_alphabet.txt'),'r');
+load(strcat(save,'/train_stats.mat'));
+fileID = fopen(strcat(save,'/train_alphabet.txt'),'r');
 tok = textscan(fileID, '%s');
 fclose(fileID);
-fileID = fopen(strcat(dir,'/save/train_target_alphabet.txt'),'r');
+fileID = fopen(strcat(save,'/train_target_alphabet.txt'),'r');
 label = textscan(fileID, '%s');
-labelStr = sprintf('%s ', label{1}{:})
-labelArr = sscanf(labelStr, '%s ',size(label{1},1));
-labelArr(1:10)
 fclose(fileID);
 
 if printdocs
@@ -23,12 +20,12 @@ if printdocs
     % fclose(fileID);
 end
 
-rep = fopen(strcat(dir,'/save/train_report.txt'),'w');
-repW = fopen(strcat(dir,'/save/topic_words.csv'),'w');
+rep = fopen(strcat(save,'/train_report.txt'),'w');
+repW = fopen(strcat(save,'/topic_words.csv'),'w');
 fprintf(repW, "topic-id,word,probability\n");
-repL = fopen(strcat(dir,'/save/topic_lift.csv'),'w');
+repL = fopen(strcat(save,'/topic_lift.csv'),'w');
 fprintf(repL, "topic-id,word,lift\n");
-repS = fopen(strcat(dir,'/save/topic_stats.csv'),'w');
+repS = fopen(strcat(save,'/topic_stats.csv'),'w');
 fprintf(repS, "topic-id,proportion,eff-no-words\n");
 
 nW = 20;
@@ -39,7 +36,6 @@ L = size(lambda,1);
 
 df = sum(topic_type,1);
 df = df / sum(df);
-size(df)
 % df = df.';
 tf = sum(doc_topic,1);
 [tc, tx] = sort(tf,'descend');
@@ -104,10 +100,10 @@ for ik = 1:K
 end
 
 %  last "label" is the base case, so ignore
-[~,lbidx] = sort(label{1,1});
+[~,lbidx] = sort(label{1});
 
 for li = 1:L-1
-    if li <= size(lbidx)
+    if li <= size(lbidx,1)
       l = lbidx(li);
       if l<L 
        lpr = lambda(l,:);
@@ -116,7 +112,7 @@ for li = 1:L-1
        fprintf(rep,"label %d::%s  eff.no.topics=%f\n", l, nm{1}, ent(lpr) );
        [out,idx] = sort(lpr,'descend');
        fprintf(rep,"  top topics are\n");
-       for i = 1:4
+       for i = 1:6
             fprintf(rep,"  %d (%f) :: %s\n", idx(i), lpr(idx(i)), topicwords(idx(i)));
        end
        fprintf(rep,"\n");

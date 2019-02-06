@@ -55,8 +55,8 @@ echo 'binarising word embeddings finished ...'
 
 alphamethod=1
 betamethod=1
-iter=20000
-burn=5000
+iter=2000
+burn=500
 
 savedir=$dataset/save && mkdir -p $savedir;
 
